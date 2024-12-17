@@ -6,6 +6,46 @@
     <title>Unity WebGL Player | Uno Online</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
+    <h1 id="heading1">
+        This is h1.
+    </h1>
+    <button onclick="myFunction()">Move the heading</button>
+    <script>
+        window.onload = function () {
+            FBInstant.initializeAsync().then(function () {
+                FBInstant.setLoadingProgress(100);
+            });
+            FBInstant.startGameAsync().then(function () {
+                startGame();
+            })
+        };
+    </script>
+    <script>
+        var ran = Math.floor(Math.random() * 1);
+
+</script>
+    <!-- Facebook SDK Integration -->
+    <script>
+      // Initialize Facebook SDK
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '2509224449282321', // Replace with your actual Facebook App ID
+          cookie     : true,
+          xfbml      : true,
+          version    : 'v14.0' // Latest version of the Facebook API
+        });
+      };
+
+      // Load the SDK asynchronously via Facebook's CDN
+      (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js"; // Facebook SDK hosted on their CDN
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
