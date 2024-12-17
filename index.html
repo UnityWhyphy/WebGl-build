@@ -6,43 +6,6 @@
     <title>Unity WebGL Player | Uno Online</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-    <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
-
-    <script>
-        window.onload = function () {
-            FBInstant.initializeAsync().then(function () {
-                FBInstant.setLoadingProgress(100);
-            });
-            FBInstant.startGameAsync().then(function () {
-                startGame();
-            })
-        };
-    </script>
-    <script>
-        var ran = Math.floor(Math.random() * 1);
-
-</script>
-    <!-- Facebook SDK Integration -->
-    <script>
-      // Initialize Facebook SDK
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '2509224449282321', // Replace with your actual Facebook App ID
-          cookie     : true,
-          xfbml      : true,
-          version    : 'v14.0' // Latest version of the Facebook API
-        });
-      };
-
-      // Load the SDK asynchronously via Facebook's CDN
-      (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "https://connect.facebook.net/en_US/sdk.js"; // Facebook SDK hosted on their CDN
-        fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
-    </script>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -94,11 +57,11 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/WebGl-build Temp test.loader.js";
+      var loaderUrl = buildUrl + "/WebGl-build.loader.js";
       var config = {
-        dataUrl: buildUrl + "/WebGl-build Temp test.data.br",
-        frameworkUrl: buildUrl + "/WebGl-build Temp test.framework.js.br",
-        codeUrl: buildUrl + "/WebGl-build Temp test.wasm.br",
+        dataUrl: buildUrl + "/WebGl-build.data",
+        frameworkUrl: buildUrl + "/WebGl-build.framework.js",
+        codeUrl: buildUrl + "/WebGl-build.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "sixace",
         productName: "Uno Online",
