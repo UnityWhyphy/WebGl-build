@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
+    <script src="https://connect.facebook.net/en_US/fbinstant.6.3.js"></script>
+    <script>
+      // Load the Facebook SDK via the CDN
+      window.fbAsyncInit = function() {
+          FB.init({
+              appId      : '2509224449282321', // Replace with your Facebook App ID
+              cookie     : true,
+              xfbml      : true,
+              version    : 'v14.0' // Latest API version (make sure it's the latest)
+          });
+      };
+  
+      // Asynchronously load the SDK
+      (function(d, s, id){
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "https://connect.facebook.net/en_US/sdk.js";
+          fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+  </script>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | Uno Online</title>
@@ -118,5 +139,6 @@
       document.body.appendChild(script);
 
     </script>
+   
   </body>
 </html>
