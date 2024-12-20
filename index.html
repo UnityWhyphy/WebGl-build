@@ -28,7 +28,7 @@
   </div>
   <script>
 
-    // console.log("initializeAsync .....!!!")
+    console.log("initializeAsync .....!!!")
     // FBInstant.initializeAsync()
     //   .then(function () {
     //     // Start loading game assets here
@@ -136,8 +136,8 @@
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
-
-      //  unityInstance.SendMessage('Demo', 'DemoCallBack', "Viren");
+        console.log("MEssage send to C#");
+        unityInstance.SendMessage('Demo', 'DemoCallBack', "Viren");
 
         loadingBar.style.display = "none";
         fullscreenButton.onclick = () => {
