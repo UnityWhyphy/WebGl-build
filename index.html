@@ -7,7 +7,7 @@
   <title>Unity WebGL Player | Uno Online</title>
   <link rel="shortcut icon" href="TemplateData/favicon.ico">
   <link rel="stylesheet" href="TemplateData/style.css">
-  <script src="https://connect.facebook.net/en_US/fbinstant.7.1.js"></script>
+  <!-- <script src="https://connect.facebook.net/en_US/fbinstant.7.1.js"></script> -->
 </head>
 
 <body>
@@ -28,32 +28,32 @@
   </div>
   <script>
 
-    console.log("initializeAsync .....!!!")
-    FBInstant.initializeAsync()
-      .then(function () {
-        // Start loading game assets here
-        console.log("initializeAsync  strat")
-        // Once all assets are loaded, tells the SDK 
-        // to end loading view and start the game
-        FBInstant.startGameAsync()
-          .then(function () {
-            console.log("startGameAsync .....!!!")
-            // Retrieving context and player information can only be done
-            // once startGameAsync() resolves
-            var contextId = FBInstant.context.getID();
-            var contextType = FBInstant.context.getType();
+    // console.log("initializeAsync .....!!!")
+    // FBInstant.initializeAsync()
+    //   .then(function () {
+    //     // Start loading game assets here
+    //     console.log("initializeAsync  strat")
+    //     // Once all assets are loaded, tells the SDK 
+    //     // to end loading view and start the game
+    //     FBInstant.startGameAsync()
+    //       .then(function () {
+    //         console.log("startGameAsync .....!!!")
+    //         // Retrieving context and player information can only be done
+    //         // once startGameAsync() resolves
+    //         var contextId = FBInstant.context.getID();
+    //         var contextType = FBInstant.context.getType();
 
-            var playerName = FBInstant.player.getName();
-            var playerPic = FBInstant.player.getPhoto();
-            var playerId = FBInstant.player.getID();
+    //         var playerName = FBInstant.player.getName();
+    //         var playerPic = FBInstant.player.getPhoto();
+    //         var playerId = FBInstant.player.getID();
 
-            // Once startGameAsync() resolves it also means the loading view has 
-            // been removed and the user can see the game viewport
+    //         // Once startGameAsync() resolves it also means the loading view has 
+    //         // been removed and the user can see the game viewport
 
-            // game.start();
-            console.log("startGameAsync END.....!!! playerName:" + playerName + ", playerPic: " + playerPic + ", playerId: " + playerId)
-          });
-      });
+    //         // game.start();
+    //         console.log("startGameAsync END.....!!! playerName:" + playerName + ", playerPic: " + playerPic + ", playerId: " + playerId)
+    //       });
+    //   });
 
     var container = document.querySelector("#unity-container");
     var canvas = document.querySelector("#unity-canvas");
