@@ -107,7 +107,7 @@
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {
                 console.log("ENTER -======>> C# ")
-                 // unityInstance.SendMessage('Demo', 'DemoCallBack', "Viren");
+                 unityInstance.SendMessage('Demo', 'DemoCallBack', "Viren");
 
                 loadingBar.style.display = "none";
                 fullscreenButton.onclick = () => {
