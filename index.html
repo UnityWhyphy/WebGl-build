@@ -27,32 +27,11 @@
     </div>
   </div>
   <script>
+    var playerName = "";
+    var playerId = "";
+    var playerPic = ""
     console.log("initializeAsync .....!!!")
-    FBInstant.initializeAsync()
-      .then(function () {
-        // Start loading game assets here
-        console.log("initializeAsync  strat")
-        // Once all assets are loaded, tells the SDK 
-        // to end loading view and start the game
-        FBInstant.startGameAsync()
-          .then(function () {
-            console.log("startGameAsync .....!!!")
-            // Retrieving context and player information can only be done
-            // once startGameAsync() resolves
-            var contextId = FBInstant.context.getID();
-            var contextType = FBInstant.context.getType();
 
-            var playerName = FBInstant.player.getName();
-            var playerPic = FBInstant.player.getPhoto();
-            var playerId = FBInstant.player.getID();
-
-            // Once startGameAsync() resolves it also means the loading view has 
-            // been removed and the user can see the game viewport
-
-            // game.start();
-            console.log("startGameAsync END.....!!! playerName:" + playerName + ", playerPic: " + playerPic + ", playerId: " + playerId)
-          });
-      });
     var container = document.querySelector("#unity-container");
     var canvas = document.querySelector("#unity-canvas");
     var loadingBar = document.querySelector("#unity-loading-bar");
@@ -84,7 +63,7 @@
       updateBannerVisibility();
     }
 
-    var buildUrl = "Build";
+    var buildUrl = "./Build";
     var loaderUrl = buildUrl + "/WebGl-build.loader.js";
     var config = {
       dataUrl: buildUrl + "/WebGl-build.data.br",
@@ -131,15 +110,47 @@
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
+      console.log(" ENTER ::+-=======::+-=======::+-=======::+-=======::+-======= OnLoad");
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
+        console.log(" ENTER ::+-=======::+-=======::+-=======::+-=======::+-======= ");
 
-        unityInstance.SendMessage("Demo", "DemoCallBack", "viren");
-        loadingBar.style.display = "none";
-        fullscreenButton.onclick = () => {
-          unityInstance.SetFullscreen(1);
-        };
+        FBInstant.initializeAsync()
+          .then(function () {
+            // Start loading game assets here
+            console.log("initializeAsync  strat")
+            // Once all assets are loaded, tells the SDK 
+            // to end loading view and start the game
+            FBInstant.startGameAsync()
+              .then(function () {
+                console.log("startGameAsync .....!!!")
+                // Retrieving context and player information can only be done
+                // once startGameAsync() resolves
+                var contextId = FBInstant.context.getID();
+                var contextType = FBInstant.context.getType();
+
+                playerName = FBInstant.player.getName();
+                playerPic = FBInstant.player.getPhoto();
+                playerId = FBInstant.player.getID();
+                unityInstance.SendMessage("FBGetdat_refrance", "GetDataCallBack", "" + playerName + "=" + playerId + "=" + playerPic);
+                loadingBar.style.display = "none";
+                fullscreenButton.onclick = () => {
+
+                  unityInstance.SetFullscreen(1);
+                };
+                console.log("startGameAsync END.....!!! playerName:" + playerName + ", playerPic: " + playerPic + ", playerId: " + playerId)
+
+                FBInstant.payments.onReady(function () {
+                  console.log('-=======>>> Payments Ready! <<-=======');
+                });
+
+                FBInstant.payments.getCatalogAsync().then(function (catalog) {
+                  console.log(catalog); // [{productID: '12345', ...}, ...]
+                });
+              });
+          });
+
       }).catch((message) => {
         console.log(message);
       });
