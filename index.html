@@ -105,7 +105,10 @@
       canvas.style.height = "600px";
     }
 
+
+
     loadingBar.style.display = "block";
+    var unityInstance1;
 
     var script = document.createElement("script");
     script.src = loaderUrl;
@@ -115,16 +118,18 @@
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         console.log(" ENTER ::+-=======::+-=======::+-=======::+-=======::+-======= ");
-
+        unityInstance1 = unityInstance;
         FBInstant.initializeAsync()
           .then(function () {
+          
             // Start loading game assets here
             console.log("initializeAsync  strat")
             // Once all assets are loaded, tells the SDK 
             // to end loading view and start the game
             FBInstant.startGameAsync()
               .then(function () {
-                console.log("startGameAsync .....!!!")
+                console.log("startGameAsync .....!!!", FBInstant.player)
+                console.log("startGameAsync .....!!!context : ", FBInstant.context)
                 // Retrieving context and player information can only be done
                 // once startGameAsync() resolves
                 var contextId = FBInstant.context.getID();
@@ -133,7 +138,7 @@
                 playerName = FBInstant.player.getName();
                 playerPic = FBInstant.player.getPhoto();
                 playerId = FBInstant.player.getID();
-                unityInstance.SendMessage("FBGetdat_refrance", "GetDataCallBack", "" + playerName + "=" + playerId + "=" + playerPic);
+                unityInstance.SendMessage("FBGetdat_refrance", "GetDataCallBack", JSON.stringify({ playerName: playerName, playerId: playerId, playerPic: playerPic }));
                 loadingBar.style.display = "none";
                 fullscreenButton.onclick = () => {
 
@@ -147,7 +152,25 @@
 
                 FBInstant.payments.getCatalogAsync().then(function (catalog) {
                   console.log(catalog); // [{productID: '12345', ...}, ...]
+                  //GetFBProductData
+                  unityInstance.SendMessage("FBGetdat_refrance", "GetFBProductData", JSON.stringify(catalog));
                 });
+
+                FBInstant.payments.getPurchasesAsync().then(function (purchases) {
+                  console.log(purchases); // [{productID: '12345', ...}, ...]
+
+                  if (purchases.length > 0) {
+                    FBInstant.payments.consumePurchaseAsync(purchases[0].purchaseToken).then(function (consumed) {
+                      console.log("consumed", consumed)
+                      // Purchase successfully consumed!
+                      // Game should now provision the product to the player
+                    }).catch(function (error) {
+                      // Handle error
+                      console.log("error", error)
+                    });
+                  }
+                });
+
               });
           });
 
@@ -155,6 +178,28 @@
         console.log(message);
       });
     };
+
+    function initiatePurchase(productID) {
+      console.log('-=======>>> Payments Logsss ! <<-=======' + productID);
+      FBInstant.payments.purchaseAsync({
+        productID: productID,//"goldpack6",
+        developerPayload: '',
+      }).then(function (purchase) {
+        console.log(purchase);
+        unityInstance1.SendMessage("FBGetdat_refrance", "GetPurchaseRes", JSON.stringify(purchase));
+      });
+    }
+
+    function consumePurchaseAsync(purchaseToken) {
+      console.log('-=======>>> purchaseToken  ! <<-=======' + purchaseToken);
+
+      FBInstant.payments.consumePurchaseAsync(purchaseToken).then(function (consumed) {
+        console.log("consumed", consumed)
+      }).catch(function (error) {
+        // Handle error
+        console.log("error", error)
+      });
+    }
 
     document.body.appendChild(script);
 
