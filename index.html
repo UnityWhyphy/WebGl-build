@@ -11,22 +11,26 @@
 </head>
 
 <body>
-  <div id="unity-container" class="unity-desktop">
-    <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+  <div id="unity-container" style="width: 100%; height: 100%">
+    <canvas id="unity-canvas" width=auto height=auto tabindex="-1"></canvas>
     <div id="unity-loading-bar">
       <div id="unity-logo"></div>
       <div id="unity-progress-bar-empty">
         <div id="unity-progress-bar-full"></div>
       </div>
     </div>
-    <div id="unity-warning"> </div>
+    <!-- <div id="unity-warning"> </div>
     <div id="unity-footer">
       <div id="unity-webgl-logo"></div>
       <div id="unity-fullscreen-button"></div>
       <div id="unity-build-title">Uno Online</div>
-    </div>
+    </div> -->
   </div>
   <script>
+
+    const INTERSTITIAL_PLACEMENT_ID = 'ca-app-pub-3940256099942544/1033173712';
+    // const REWARDED_PLACEMENT_ID = '<YOUR REWARDED VIDEO PLACEMENT ID>';
+
     var playerName = "";
     var playerId = "";
     var playerPic = ""
@@ -101,10 +105,9 @@
     } else {
       // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-      canvas.style.width = "960px";
-      canvas.style.height = "600px";
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
     }
-
 
 
     loadingBar.style.display = "block";
@@ -113,41 +116,45 @@
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
-      console.log(" ENTER ::+-=======::+-=======::+-=======::+-=======::+-======= OnLoad");
+      // console.log(" ENTER ::+-=======::+-=======::+-=======::+-=======::+-======= OnLoad");
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
-        console.log(" ENTER ::+-=======::+-=======::+-=======::+-=======::+-======= ");
+        // console.log(" ENTER ::+-=======::+-=======::+-=======::+-=======::+-======= ");
         unityInstance1 = unityInstance;
         FBInstant.initializeAsync()
           .then(function () {
-          
+
             // Start loading game assets here
             console.log("initializeAsync  strat")
             // Once all assets are loaded, tells the SDK 
             // to end loading view and start the game
             FBInstant.startGameAsync()
               .then(function () {
-                console.log("startGameAsync .....!!!", FBInstant.player)
+                // console.log("startGameAsync .....!!!", FBInstant.player)
                 console.log("startGameAsync .....!!!context : ", FBInstant.context)
                 // Retrieving context and player information can only be done
                 // once startGameAsync() resolves
                 var contextId = FBInstant.context.getID();
                 var contextType = FBInstant.context.getType();
 
+                
+                FBInstant.player.getSignedPlayerInfoAsync().then((signedPlayerInfo) => {
+                  const userAccessToken = signedPlayerInfo.getSignature();
+                  console.log('User Access Token:', userAccessToken);
+                  // Send this token to your server for verification and further use.
+                
+
                 playerName = FBInstant.player.getName();
                 playerPic = FBInstant.player.getPhoto();
                 playerId = FBInstant.player.getID();
-                unityInstance.SendMessage("FBGetdat_refrance", "GetDataCallBack", JSON.stringify({ playerName: playerName, playerId: playerId, playerPic: playerPic }));
+                unityInstance.SendMessage("FBGetdat_refrance", "GetDataCallBack", JSON.stringify({ playerName: playerName, playerId: playerId, playerPic: playerPic,fb_token:userAccessToken }));
                 loadingBar.style.display = "none";
-                fullscreenButton.onclick = () => {
 
-                  unityInstance.SetFullscreen(1);
-                };
-                console.log("startGameAsync END.....!!! playerName:" + playerName + ", playerPic: " + playerPic + ", playerId: " + playerId)
+                // console.log("startGameAsync END.....!!! playerName:" + playerName + ", playerPic: " + playerPic + ", playerId: " + playerId)
 
                 FBInstant.payments.onReady(function () {
-                  console.log('-=======>>> Payments Ready! <<-=======');
+                  // console.log('-=======>>> Payments Ready! <<-=======');
                 });
 
                 FBInstant.payments.getCatalogAsync().then(function (catalog) {
@@ -161,7 +168,7 @@
 
                   if (purchases.length > 0) {
                     FBInstant.payments.consumePurchaseAsync(purchases[0].purchaseToken).then(function (consumed) {
-                      console.log("consumed", consumed)
+                      // console.log("consumed", consumed)
                       // Purchase successfully consumed!
                       // Game should now provision the product to the player
                     }).catch(function (error) {
@@ -171,6 +178,20 @@
                   }
                 });
 
+
+                // FBInstant.getInterstitialAdAsync(
+                //   INTERSTITIAL_PLACEMENT_ID, // Your Ad Placement Id
+                // ).then(function (interstitial) {
+                //   // Load the Ad asynchronously
+                //   preloadedInterstitial = interstitial;
+                //   return preloadedInterstitial.loadAsync();
+                // }).then(function () {
+                //   // console.log('Interstitial preloaded');
+                // }).catch(function (err) {
+                //   // console.error('Interstitial failed to preload: ' + err.message);
+                // });
+
+              });
               });
           });
 
@@ -180,27 +201,33 @@
     };
 
     function initiatePurchase(productID) {
-      console.log('-=======>>> Payments Logsss ! <<-=======' + productID);
+      // console.log('-=======>>> Payments Logsss ! <<-=======' + productID);
       FBInstant.payments.purchaseAsync({
-        productID: productID,//"goldpack6",
+        productID: productID,
         developerPayload: '',
       }).then(function (purchase) {
         console.log(purchase);
         unityInstance1.SendMessage("FBGetdat_refrance", "GetPurchaseRes", JSON.stringify(purchase));
+
+        FBInstant.payments.consumePurchaseAsync(purchase.purchaseToken).then(function (consumed) {
+          console.log("consumed", consumed)
+        }).catch(function (error) {
+          // Handle error
+          console.log("error", error)
+        });
       });
     }
 
-    function consumePurchaseAsync(purchaseToken) {
-      console.log('-=======>>> purchaseToken  ! <<-=======' + purchaseToken);
-
-      FBInstant.payments.consumePurchaseAsync(purchaseToken).then(function (consumed) {
-        console.log("consumed", consumed)
-      }).catch(function (error) {
-        // Handle error
-        console.log("error", error)
-      });
+    function ShowAd() {
+      preloadedInterstitial.showAsync()
+        .then(function () {
+          // Perform post-ad success operation
+          // console.log('Interstitial ad finished successfully');
+        })
+        .catch(function (e) {
+          // console.error(e.message);
+        });
     }
-
     document.body.appendChild(script);
 
   </script>
